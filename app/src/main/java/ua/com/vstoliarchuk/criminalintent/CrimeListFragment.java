@@ -15,15 +15,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
+import java.util.UUID;
 
 /**
  * Created by vstoliar on 01.06.2017.
  */
 public class CrimeListFragment extends Fragment {
+    private final static String ARG_CRIME_ID = "changed_crime_position";
     private RecyclerView mCrimeRecyclerView;
     private CrimeAdapter mAdapter;
     private int mChangedItemPosition;
@@ -34,6 +37,7 @@ public class CrimeListFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mChangedItemPosition = getArguments().getInt(ARG_CRIME_ID);
         setHasOptionsMenu(true);
     }
 
@@ -144,6 +148,14 @@ public class CrimeListFragment extends Fragment {
         startActivity(intent);
     }
 
+    public static Fragment newInstance(int position) {
+        CrimeListFragment fragment = new CrimeListFragment();
+        Bundle args = new Bundle();
+        args.putSerializable(ARG_CRIME_ID, position);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
 
     private class CrimeHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private Crime mCrime;
@@ -158,16 +170,22 @@ public class CrimeListFragment extends Fragment {
             mSolvedCheckBox = (CheckBox) itemView.findViewById(R.id.list_item_crime_solved_check_box);
         }
 
-        public void bindCrime(Crime crime) {
+        public void bindCrime(final Crime crime) {
             mCrime = crime;
             mTitleTextView.setText(crime.getTitle());
             mDateTextView.setText(crime.getDate().toString());
             mSolvedCheckBox.setChecked(crime.isSolved());
+            mSolvedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    mCrime.setSolved(isChecked);
+                    CrimeLab.get(getActivity()).updateCrime(mCrime);
+                }
+            });
         }
 
         @Override
         public void onClick(View v) {
-            mChangedItemPosition = getAdapterPosition();
             Intent intent = CrimePagerActivity.newIntent(getContext(), mCrime.getId());
             startActivity(intent);
             //Toast.makeText(getActivity(), mCrime.getTitle() + " Clicked!", Toast.LENGTH_SHORT).show();
