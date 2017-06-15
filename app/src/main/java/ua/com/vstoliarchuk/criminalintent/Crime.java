@@ -7,10 +7,12 @@ import java.util.UUID;
  * Created by vstoliar on 01.06.2017.
  */
 public class Crime {
+    private String mSuspect;
     private UUID mId;
     private String mTitle;
     private Date mDate;
     private boolean mSolved;
+    private String mSuspectNumber;
 
     public Crime(){
         mId = UUID.randomUUID();
@@ -48,5 +50,21 @@ public class Crime {
 
     public void setSolved(boolean solved) {
         mSolved = solved;
+    }
+
+    public String getSuspect() {
+        return mSuspect;
+    }
+
+    public void setSuspect(String suspect) {
+        mSuspect = suspect;
+    }
+
+    public String getSuspectNumber() {
+        return mSuspectNumber;
+    }
+
+    public void setSuspectNumber(String suspectNumber) {
+        mSuspectNumber = suspectNumber;
     }
 }

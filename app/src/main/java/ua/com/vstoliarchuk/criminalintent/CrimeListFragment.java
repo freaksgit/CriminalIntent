@@ -82,6 +82,7 @@ public class CrimeListFragment extends Fragment {
             mAdapter = new CrimeAdapter(crimes);
             mCrimeRecyclerView.setAdapter(mAdapter);
         } else {
+            mAdapter.setCrimes(crimes);
             mAdapter.notifyItemChanged(mChangedItemPosition);
             if (mAdapter.mCrimes.isEmpty()) {
                 mCrimeRecyclerView.setVisibility(View.GONE);
@@ -188,6 +189,7 @@ public class CrimeListFragment extends Fragment {
         public void onClick(View v) {
             Intent intent = CrimePagerActivity.newIntent(getContext(), mCrime.getId());
             startActivity(intent);
+            mChangedItemPosition = getAdapterPosition();
             //Toast.makeText(getActivity(), mCrime.getTitle() + " Clicked!", Toast.LENGTH_SHORT).show();
         }
     }
@@ -197,6 +199,10 @@ public class CrimeListFragment extends Fragment {
         private List<Crime> mCrimes;
 
         public CrimeAdapter(List<Crime> crimes) {
+            mCrimes = crimes;
+        }
+
+        public void setCrimes(List<Crime> crimes) {
             mCrimes = crimes;
         }
 
